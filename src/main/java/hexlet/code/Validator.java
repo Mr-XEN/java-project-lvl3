@@ -1,8 +1,10 @@
 package hexlet.code;
 
-public class Validator {
+import hexlet.code.schemas.StringSchema;
 
-    public static int test(int a, int b) {
-        return a - b;
+public final class Validator {
+
+    public StringSchema string() {
+        return new StringSchema();
     }
 }
