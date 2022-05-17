@@ -28,13 +28,16 @@ public class StringSchema {
 //        return getResult();
 //    }
 
-    private boolean isRequired(Object o) {
+    private void isRequired(Object o) {
         if (o == null) {
-            setResult(false);
+            listOfResult.add(false);
+//            setResult(false);
         } else if (o instanceof String && ((String) o).isEmpty()) {
-            setResult(false);
-        } else setResult(true);
-        return getResult();
+            listOfResult.add(false);
+//            setResult(false);
+        } else listOfResult.add(true);
+        ;
+
     }
 
 
@@ -44,15 +47,12 @@ public class StringSchema {
         return this;
     }
 
-    private boolean isMinLength(Object o, int i) {
+    private void isMinLength(Object o, int i) {
         for (int j = 0; j < listOfMinLength.size(); j++) {
             if (getStringToValidate().length() >= listOfMinLength.get(i)) {
                 listOfResult.add(true);
             } else listOfResult.add(false);
         }
-
-
-        return getResult();
     }
 
 
@@ -70,23 +70,31 @@ public class StringSchema {
     }
 
     public boolean isValid(Object object) {
+        int countForMinLengthList = 0;
+
         if (object instanceof String) {
             setStringToValidate((String) object);
         }
+
         setObjectToValidate(object);
+
         if (!listOfTasks.isEmpty()) {
             for (int i = 0; i < listOfTasks.size(); i++) {
                 switch (listOfTasks.get(i)) {
                     case "required" -> isRequired(object);
-                    case "minLength" -> isMinLength(object,i);
+                    case "minLength" -> {
+                        isMinLength(object, countForMinLengthList);
+                        countForMinLengthList = countForMinLengthList + 1;
+                    }
                     default -> throw new Error("Unknown task!");
                 }
             }
+
             for (int i = 0; i < listOfResult.size(); i++) {
-              if(listOfResult.get(i) == false) {
-                  setResult(false);
-                  break;
-              }
+                if (listOfResult.get(i) == false) {
+                    setResult(false);
+                    break;
+                }
             }
         }
         return getResult();
