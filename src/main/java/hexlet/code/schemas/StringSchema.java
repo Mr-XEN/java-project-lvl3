@@ -1,76 +1,66 @@
 package hexlet.code.schemas;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class StringSchema {
 
-    boolean result = true;
-    int length;
-    Object objectToValidate;
-    String stringToValidate;
-    String stringToContain;
-    List<String> listOfTasks = new ArrayList<>();
-    List<Integer> listOfMinLength = new ArrayList<>();
-    List<Boolean> listOfResult = new ArrayList<>();
+    private boolean validationResult = true;
+    private Object objectToValidate;
+    private String stringToValidate;
+    private final List<String> listOfTasks = new ArrayList<>();
+    private final List<Boolean> listOfResult = new LinkedList<>();
+    private final List<Map<String, Object>> listOfRules = new LinkedList<>();
 
-    public StringSchema required() {
+    public final StringSchema required() {
         listOfTasks.add("required");
+        listOfRules.add(Map.of("required", "required"));
         return this;
     }
-
-//    public boolean isRequired() {
-//        if(listOfTasks.isEmpty()) {
-//            setResult(true);
-//        } else if(getObjectToValidate() == null && !(getObjectToValidate() instanceof String) && !((String) getObjectToValidate()).isEmpty()) {
-//            setResult(false);
-//        } else setResult(false);
-//        return getResult();
-//    }
 
     private void isRequired(Object o) {
         if (o == null) {
             listOfResult.add(false);
-//            setResult(false);
         } else if (o instanceof String && ((String) o).isEmpty()) {
             listOfResult.add(false);
-//            setResult(false);
-        } else listOfResult.add(true);
-        ;
-
+        } else {
+            listOfResult.add(true);
+        }
     }
 
 
-    public StringSchema minLength(int length) {
+    public final StringSchema minLength(int length) {
         listOfTasks.add("minLength");
-        listOfMinLength.add(length);
+        listOfRules.add(Map.of("minLength", length));
         return this;
     }
 
     private void isMinLength(Object o, int i) {
-        for (int j = 0; j < listOfMinLength.size(); j++) {
-            if (getStringToValidate().length() >= listOfMinLength.get(i)) {
-                listOfResult.add(true);
-            } else listOfResult.add(false);
+        if (o != null && getStringToValidate().length() >= i) {
+            listOfResult.add(true);
+        } else {
+            listOfResult.add(false);
         }
     }
 
 
-    public StringSchema contains(Object inputStringToContain) {
+    public final StringSchema contains(Object inputStringToContain) {
         listOfTasks.add("contains");
         if (inputStringToContain instanceof String) {
-            setStringToContain((String) inputStringToContain);
+            listOfRules.add(Map.of("contains", inputStringToContain));
         }
         return this;
     }
 
-    private boolean isContains(Object object) {
-        setResult(getStringToValidate().contains(getStringToContain()));
-        return result;
+    private void isContains(Object object, String inputString) {
+        if (object instanceof String) {
+            listOfResult.add(getStringToValidate().contains(inputString));
+        }
     }
 
-    public boolean isValid(Object object) {
-        int countForMinLengthList = 0;
+    public final boolean isValid(Object object) {
 
         if (object instanceof String) {
             setStringToValidate((String) object);
@@ -80,74 +70,47 @@ public class StringSchema {
 
         if (!listOfTasks.isEmpty()) {
             for (int i = 0; i < listOfTasks.size(); i++) {
-                switch (listOfTasks.get(i)) {
-                    case "required" -> isRequired(object);
-                    case "minLength" -> {
-                        isMinLength(object, countForMinLengthList);
-                        countForMinLengthList = countForMinLengthList + 1;
+                for (Map<String, Object> stringObjectMap : listOfRules) {
+                    if (stringObjectMap.containsKey("required")) {
+                        isRequired(object);
                     }
-                    default -> throw new Error("Unknown task!");
+                    if (stringObjectMap.containsKey("minLength")) {
+                        isMinLength(object, (Integer) stringObjectMap.get("minLength"));
+                    }
+                    if (stringObjectMap.containsKey("contains")) {
+                        isContains(object, (String) stringObjectMap.get("contains"));
+                    }
                 }
             }
-
-            for (int i = 0; i < listOfResult.size(); i++) {
-                if (listOfResult.get(i) == false) {
-                    setResult(false);
+            for (Boolean result : listOfResult) {
+                if (!result) {
+                    setValidationResult(false);
                     break;
                 }
             }
         }
-        return getResult();
+        return getValidationResult();
     }
 
-    @Override
-    public String toString() {
-        return "StringSchema{" +
-               "result=" + result +
-               ", string='" + stringToValidate + '\'' +
-               ", length=" + length +
-               ", contain='" + stringToContain + '\'' +
-               ", list=" + listOfTasks +
-               '}';
-    }
 
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
-
-    public String getStringToValidate() {
+    private String getStringToValidate() {
         return stringToValidate;
     }
 
-    public void setStringToValidate(String stringToValidate) {
-        this.stringToValidate = stringToValidate;
+    private void setStringToValidate(String stringOfValidate) {
+        this.stringToValidate = stringOfValidate;
     }
 
-    public String getStringToContain() {
-        return stringToContain;
+    private boolean getValidationResult() {
+        return validationResult;
     }
 
-    public void setStringToContain(String stringToContain) {
-        this.stringToContain = stringToContain;
+    private void setValidationResult(boolean result2) {
+        this.validationResult = result2;
     }
 
-    public boolean getResult() {
-        return result;
+    private void setObjectToValidate(Object objectOfValidate) {
+        this.objectToValidate = objectOfValidate;
     }
 
-    public void setResult(boolean result) {
-        this.result = result;
-    }
-
-    public Object getObjectToValidate() {
-        return objectToValidate;
-    }
-
-    public void setObjectToValidate(Object objectToValidate) {
-        this.objectToValidate = objectToValidate;
-    }
 }
