@@ -11,6 +11,8 @@ public class StringSchema {
     String stringToValidate;
     String stringToContain;
     List<String> listOfTasks = new ArrayList<>();
+    List<Integer> listOfMinLength = new ArrayList<>();
+    List<Boolean> listOfResult = new ArrayList<>();
 
     public StringSchema required() {
         listOfTasks.add("required");
@@ -26,10 +28,10 @@ public class StringSchema {
 //        return getResult();
 //    }
 
-    public boolean isRequired(Object o) {
+    private boolean isRequired(Object o) {
         if (o == null) {
             setResult(false);
-        } else if(o instanceof String && ((String) o).isEmpty()) {
+        } else if (o instanceof String && ((String) o).isEmpty()) {
             setResult(false);
         } else setResult(true);
         return getResult();
@@ -38,14 +40,18 @@ public class StringSchema {
 
     public StringSchema minLength(int length) {
         listOfTasks.add("minLength");
-        setLength(length);
+        listOfMinLength.add(length);
         return this;
     }
 
-    public boolean isMinLength(Object o) {
-        if(o instanceof String) {
-            setResult(getLength() >= ((String) o).length());
+    private boolean isMinLength(Object o, int i) {
+        for (int j = 0; j < listOfMinLength.size(); j++) {
+            if (getStringToValidate().length() >= listOfMinLength.get(i)) {
+                listOfResult.add(true);
+            } else listOfResult.add(false);
         }
+
+
         return getResult();
     }
 
@@ -58,27 +64,30 @@ public class StringSchema {
         return this;
     }
 
-    public boolean isContains(Object object) {
+    private boolean isContains(Object object) {
         setResult(getStringToValidate().contains(getStringToContain()));
         return result;
     }
 
     public boolean isValid(Object object) {
+        if (object instanceof String) {
+            setStringToValidate((String) object);
+        }
         setObjectToValidate(object);
-        if(!listOfTasks.isEmpty()) {
-            for (String listOfTask : listOfTasks) {
-                switch (listOfTask) {
+        if (!listOfTasks.isEmpty()) {
+            for (int i = 0; i < listOfTasks.size(); i++) {
+                switch (listOfTasks.get(i)) {
                     case "required" -> isRequired(object);
-                    case "minLength" -> isMinLength(object);
-
-                    //                   case "contains" : isContains(object);
+                    case "minLength" -> isMinLength(object,i);
                     default -> throw new Error("Unknown task!");
                 }
-
             }
-
-        } else {
-            return getResult();
+            for (int i = 0; i < listOfResult.size(); i++) {
+              if(listOfResult.get(i) == false) {
+                  setResult(false);
+                  break;
+              }
+            }
         }
         return getResult();
     }

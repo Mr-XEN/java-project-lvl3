@@ -10,6 +10,10 @@ public class App {
         StringSchema schema = v.string();
         StringSchema schema2 = v.string();
 
+//        System.out.println(schema2.minLength(1).minLength(2).minLength(3).isValid("wer"));
+//        System.out.println();
+//        System.out.println();
+
 //
 //        schema2.isValid(""); // true
 //        schema2.isValid(null); // true
@@ -33,6 +37,11 @@ public class App {
         System.out.println(schema.isValid("hexlet")); //true
         System.out.println(schema.isValid(null)); // false
         System.out.println(schema.isValid("")); // false
+        System.out.println();
+
+
+
+
 
 
 //        System.out.println(schema.contains("what").isValid("what does the fox say"));
