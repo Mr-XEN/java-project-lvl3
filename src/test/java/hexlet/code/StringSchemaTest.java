@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StringSchemaTest {
 
-    private final Validator v = new Validator();
+    private final Validator validator = new Validator();
     private StringSchema stringSchemaOne;
     private StringSchema stringSchemaTwo;
     private static final int FIFTYFOUR = 54;
@@ -18,11 +18,10 @@ class StringSchemaTest {
     private static final int FIFTEEN = 15;
 
 
-
     @BeforeEach
     public void init() {
-        stringSchemaOne = v.string();
-        stringSchemaTwo = v.string();
+        stringSchemaOne = validator.string();
+        stringSchemaTwo = validator.string();
     }
 
     @Test
@@ -51,7 +50,7 @@ class StringSchemaTest {
 
     @Test
     void minLengthWithEmptyString() {
-        assertTrue(stringSchemaOne.minLength(0).isValid(""));
+        assertTrue(stringSchemaOne.isValid(""));
         assertFalse(stringSchemaTwo.minLength(FIFTYFOUR).isValid(""));
     }
 
