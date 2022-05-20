@@ -4,9 +4,10 @@ import java.util.function.Predicate;
 
 public class StringSchema extends BaseSchema {
 
+    @Override
     public final StringSchema required() {
         Predicate<Object> rule = object -> object instanceof String && !((String) object).isEmpty();
-        setListOfRules(rule);
+        addRule(rule);
         return this;
     }
 
@@ -15,7 +16,7 @@ public class StringSchema extends BaseSchema {
             String res = (String) object;
             return object != null && res.length() >= length;
         };
-        setListOfRules(rule);
+        addRule(rule);
         return this;
     }
 
@@ -24,7 +25,7 @@ public class StringSchema extends BaseSchema {
             String result = (String) object;
             return object != null && result.contains(inputString);
         };
-        setListOfRules(rule);
+        addRule(rule);
         return this;
     }
 

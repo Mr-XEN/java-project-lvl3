@@ -5,15 +5,16 @@ import java.util.function.Predicate;
 
 public class NumberSchema extends BaseSchema {
 
+    @Override
     public final NumberSchema required() {
         Predicate<Object> rule = number -> number instanceof Integer;
-        setListOfRules(rule);
+        addRule(rule);
         return this;
     }
 
     public final NumberSchema positive() {
-        Predicate<Object> rule = number -> number instanceof Integer && (Integer) number > 0;
-        setListOfRules(rule);
+        Predicate<Object> rule = number -> number == null || (number instanceof Integer && (Integer) number > 0);
+        addRule(rule);
         return this;
     }
 
@@ -21,7 +22,7 @@ public class NumberSchema extends BaseSchema {
         Predicate<Object> ruleOne = Objects::nonNull;
         Predicate<Object> ruleTwo = number -> (Integer) number >= rangeStart && (Integer) number <= rangeEnd;
         Predicate<Object> complexRule = ruleOne.and(ruleTwo);
-        setListOfRules(complexRule);
+        addRule(complexRule);
         return this;
     }
 }
