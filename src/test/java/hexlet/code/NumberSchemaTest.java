@@ -16,8 +16,6 @@ class NumberSchemaTest {
     private static final int ONE = 1;
     private static final int NEGATIVEONE = 1;
     private static final int FIFTYFOUR = 54;
-    private static final int TWENTYSIX = 26;
-    private static final int TWENTYSEVEN = 27;
     private static final int FIFTEEN = 15;
     private static final int NEGATIVEFIFTEEN = -15;
 
